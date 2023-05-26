@@ -1,10 +1,13 @@
 package com.yoacspring.dslist.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.yoacspring.dslist.dto.GameDTO;
 import com.yoacspring.dslist.dto.GameMinDTO;
 import com.yoacspring.dslist.entities.Game;
 import com.yoacspring.dslist.repositories.GameRepository;
@@ -17,10 +20,18 @@ public class GameService {
 	@Autowired
 	private GameRepository gameRepository;
 
+	@Transactional(readOnly = true)
 	public List<GameMinDTO> findAll(){
-		// Método findAll padrão do jpa que retorna uma lista das entidades game
 		List<Game> result = gameRepository.findAll();
-		// Lambda pra transformar a lista de games em lista de gamesDTO
 		return result.stream().map(x -> new GameMinDTO(x)).toList();
+	}
+	
+	// FindById retorna um optional, permitindo que tratemos a excecao melhor mas por enquanto é isso
+	@Transactional(readOnly = true)
+	public GameDTO findById(Long id){
+		Game result = gameRepository.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("Game not found"));
+
+		return new GameDTO(result);
 	}
 }
