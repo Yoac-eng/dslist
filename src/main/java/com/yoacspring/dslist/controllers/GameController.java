@@ -27,7 +27,6 @@ public class GameController {
 		return result;
 	}
 	
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<GameDTO> findById(@PathVariable Long id){
 		try {

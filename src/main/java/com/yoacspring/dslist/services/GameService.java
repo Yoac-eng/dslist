@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yoacspring.dslist.dto.GameDTO;
 import com.yoacspring.dslist.dto.GameMinDTO;
 import com.yoacspring.dslist.entities.Game;
+import com.yoacspring.dslist.projections.GameMinProjection;
 import com.yoacspring.dslist.repositories.GameRepository;
 
 @Service
@@ -33,5 +34,12 @@ public class GameService {
 				.orElseThrow(() -> new NoSuchElementException("Game not found"));
 
 		return new GameDTO(result);
+	}
+	
+	// Buscar jogos por lista
+	@Transactional(readOnly = true)
+	public List<GameMinDTO> findByList(Long listId){
+		List<GameMinProjection> result = gameRepository.searchByList(listId);
+		return result.stream().map(x -> new GameMinDTO(x)).toList();
 	}
 }
